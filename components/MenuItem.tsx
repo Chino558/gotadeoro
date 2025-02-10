@@ -35,6 +35,14 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
       style={styles.container} 
       onPress={handlePress}
     >
+      {quantity > 0 && (
+        <Pressable 
+          onPress={handleDecrement}
+          style={styles.decrementButton}
+        >
+          <Ionicons name="remove-circle" size={20} color={COLORS.error} />
+        </Pressable>
+      )}
       <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
       <Text style={styles.price}>${item.price}</Text>
       {quantity > 0 && (
@@ -85,5 +93,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: '700',
+  },
+  decrementButton: {
+    position: 'absolute',
+    left: -5,
+    top: -5,
+    zIndex: 1,
+    backgroundColor: 'white',
+    borderRadius: 10,
   },
 });

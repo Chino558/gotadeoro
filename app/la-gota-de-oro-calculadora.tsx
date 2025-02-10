@@ -4,72 +4,97 @@ import { StatusBar } from 'expo-status-bar';
 import { MenuItem } from '../components/MenuItem';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderDetails } from '../components/OrderDetails';
-import { FloatingActionButton } from '../components/FloatingActionButton';
+import { TableTabs } from '../components/TableTabs';
 import { menuItems } from '../data/menuItems';
 import { OrderItem } from '../types';
 import { COLORS } from '../theme';
 import { Ionicons } from '@expo/vector-icons';
 
+interface TableOrders {
+  [tableNumber: number]: Record<string, OrderItem>;
+}
+
 export default function CalculadoraScreen() {
   const colorScheme = useColorScheme();
-  const [orderItems, setOrderItems] = useState<Record<string, OrderItem>>({});
+  const [tableOrders, setTableOrders] = useState<TableOrders>({ 1: {} });
+  const [tables, setTables] = useState<number[]>([1]);
   const [currentTable, setCurrentTable] = useState(1);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
 
+  const currentOrderItems = tableOrders[currentTable] || {};
+
   const handleIncrement = useCallback((itemId: string) => {
-    setOrderItems((prev) => {
+    setTableOrders((prev) => {
       const item = menuItems.find((i) => i.id === itemId);
       if (!item) return prev;
 
-      const existing = prev[itemId];
+      const currentItems = prev[currentTable] || {};
+      const existing = currentItems[itemId];
+
       return {
         ...prev,
-        [itemId]: {
-          ...item,
-          quantity: (existing?.quantity || 0) + 1,
+        [currentTable]: {
+          ...currentItems,
+          [itemId]: {
+            ...item,
+            quantity: (existing?.quantity || 0) + 1,
+          },
         },
       };
     });
-  }, []);
+  }, [currentTable]);
 
   const handleDecrement = useCallback((itemId: string) => {
-    setOrderItems((prev) => {
-      const existing = prev[itemId];
+    setTableOrders((prev) => {
+      const currentItems = prev[currentTable] || {};
+      const existing = currentItems[itemId];
       if (!existing || existing.quantity <= 0) return prev;
 
       const newQuantity = existing.quantity - 1;
+      const newItems = { ...currentItems };
+
       if (newQuantity === 0) {
-        const { [itemId]: _, ...rest } = prev;
-        return rest;
+        delete newItems[itemId];
+      } else {
+        newItems[itemId] = {
+          ...existing,
+          quantity: newQuantity,
+        };
       }
 
       return {
         ...prev,
-        [itemId]: {
-          ...existing,
-          quantity: newQuantity,
-        },
+        [currentTable]: newItems,
       };
     });
-  }, []);
+  }, [currentTable]);
 
-  const handleNewTable = () => {
-    setOrderItems({});
-    setCurrentTable(prev => prev + 1);
+  const handleAddTable = () => {
+    const newTable = Math.max(...tables) + 1;
+    setTables(prev => [...prev, newTable]);
+    setTableOrders(prev => ({
+      ...prev,
+      [newTable]: {},
+    }));
+    setCurrentTable(newTable);
+  };
+
+  const handleTableChange = (table: number) => {
+    setCurrentTable(table);
     setShowOrderDetails(false);
   };
 
-  const total = Object.values(orderItems).reduce(
+  const total = Object.values(currentOrderItems).reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const itemCount = Object.values(orderItems).reduce(
+  const itemCount = Object.values(currentOrderItems).reduce(
     (sum, item) => sum + item.quantity,
     0
   );
 
-  const orderItemsList = Object.values(orderItems).filter(item => item.quantity > 0);
+  const orderItemsList = Object.values(currentOrderItems).filter(item => item.quantity > 0);
 
   return (
     <View style={[
@@ -79,8 +104,13 @@ export default function CalculadoraScreen() {
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <View style={styles.header}>
         <Text style={styles.title}>La Gota de Oro</Text>
-        <Text style={styles.tableText}>Mesa {currentTable}</Text>
       </View>
+      <TableTabs
+        tables={tables}
+        currentTable={currentTable}
+        onTableChange={handleTableChange}
+        onAddTable={handleAddTable}
+      />
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.id}
@@ -88,16 +118,12 @@ export default function CalculadoraScreen() {
         renderItem={({ item }) => (
           <MenuItem
             item={item}
-            quantity={orderItems[item.id]?.quantity || 0}
+            quantity={currentOrderItems[item.id]?.quantity || 0}
             onIncrement={() => handleIncrement(item.id)}
             onDecrement={() => handleDecrement(item.id)}
           />
         )}
         contentContainerStyle={styles.list}
-      />
-      <FloatingActionButton 
-        onPress={handleNewTable} 
-        style={styles.fab}
       />
       <Pressable 
         style={styles.orderDetailsButton}
@@ -116,7 +142,7 @@ export default function CalculadoraScreen() {
         total={total}
         itemCount={itemCount}
         onCheckout={() => {
-          console.log(`Table ${currentTable} order:`, orderItems);
+          console.log(`Table ${currentTable} order:`, currentOrderItems);
         }}
       />
     </View>
@@ -138,17 +164,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
-  tableText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
   list: {
     padding: 4,
     paddingBottom: 100,
-  },
-  fab: {
-    bottom: 160, // Moved higher up
   },
   orderDetailsButton: {
     position: 'absolute',
