@@ -7,7 +7,7 @@ export default function CalculadoraScreen() {
   // ... existing code ...
 
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       {/* ... other components ... */}
       
       <OrderSummary
@@ -17,13 +17,12 @@ export default function CalculadoraScreen() {
         onCheckout={() => setShowCheckout(true)}
       />
       
-      {showCheckout && (
-        <CheckoutScreen
-          items={orderItemsList}
-          tableNumber={currentTable}
-          onClose={() => setShowCheckout(false)}
-        />
-      )}
+      <CheckoutBreakdown
+        visible={showCheckout}
+        items={orderItemsList}
+        tableNumber={currentTable}
+        onClose={() => setShowCheckout(false)}
+      />
       
       {/* ... other components ... */}
     </View>
