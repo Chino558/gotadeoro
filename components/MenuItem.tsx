@@ -14,11 +14,11 @@ interface MenuItemProps {
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_MARGIN = 4;
-const NUM_COLUMNS = 3; // Changed to 3 columns
+const NUM_COLUMNS = 3;
 const CARD_WIDTH = (SCREEN_WIDTH - (NUM_COLUMNS + 1) * CARD_MARGIN * 2) / NUM_COLUMNS;
 
 export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemProps) {
-  const handleIncrement = () => {
+  const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onIncrement();
   };
@@ -31,23 +31,18 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
   };
 
   return (
-    <View style={styles.container}>
+    <Pressable 
+      style={styles.container} 
+      onPress={handlePress}
+    >
       <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
       <Text style={styles.price}>${item.price}</Text>
-      <View style={styles.quantityContainer}>
-        <Pressable onPress={handleDecrement} style={styles.button}>
-          <Ionicons 
-            name="remove" 
-            size={18} 
-            color={quantity > 0 ? COLORS.primary : COLORS.border} 
-          />
-        </Pressable>
-        <Text style={styles.quantity}>{quantity}</Text>
-        <Pressable onPress={handleIncrement} style={styles.button}>
-          <Ionicons name="add" size={18} color={COLORS.primary} />
-        </Pressable>
-      </View>
-    </View>
+      {quantity > 0 && (
+        <View style={styles.quantityBadge}>
+          <Text style={styles.quantityText}>{quantity}</Text>
+        </View>
+      )}
+    </Pressable>
   );
 }
 
@@ -63,6 +58,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+    minHeight: 60,
   },
   name: {
     fontSize: 12,
@@ -73,20 +69,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: COLORS.primary,
-    marginBottom: 4,
   },
-  quantityContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  quantityBadge: {
+    position: 'absolute',
+    right: -5,
+    top: -5,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
-    padding: 4,
-  },
-  quantity: {
-    fontSize: 14,
-    fontWeight: '600',
-    minWidth: 20,
-    textAlign: 'center',
+  quantityText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
