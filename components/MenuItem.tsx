@@ -64,4 +64,62 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
   );
 }
 
-// ... rest of the styles remain the same ...
+const styles = StyleSheet.create({
+  container: {
+    width: CARD_WIDTH,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    margin: CARD_MARGIN,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    minHeight: 80,
+    justifyContent: 'space-between',
+  },
+  name: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 4,
+    textAlign: 'center',
+    height: 36,
+  },
+  price: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.primary,
+    textAlign: 'center',
+  },
+  quantityBadge: {
+    position: 'absolute',
+    right: -8,
+    top: -8,
+    backgroundColor: COLORS.primary,
+    borderRadius: 14,
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  quantityText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  minusButton: {
+    position: 'absolute',
+    left: -8,
+    top: -8,
+    zIndex: 1,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
