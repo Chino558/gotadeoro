@@ -23,13 +23,6 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
     onIncrement();
   };
 
-  const handleDecrement = () => {
-    if (quantity > 0) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      onDecrement();
-    }
-  };
-
   return (
     <Pressable 
       style={styles.container} 
@@ -37,14 +30,16 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
     >
       {quantity > 0 && (
         <Pressable 
-          onPress={handleDecrement}
-          style={styles.decrementButton}
-          hitSlop={8}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onDecrement();
+          }}
+          style={styles.minusButton}
         >
-          <Ionicons name="remove-circle" size={20} color={COLORS.error} />
+          <Ionicons name="remove-circle" size={22} color={COLORS.error} />
         </Pressable>
       )}
-      <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
+      <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
       <Text style={styles.price}>${item.price}</Text>
       {quantity > 0 && (
         <View style={styles.quantityBadge}>
@@ -59,48 +54,58 @@ const styles = StyleSheet.create({
   container: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: 12,
     margin: CARD_MARGIN,
-    padding: 8,
+    padding: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    minHeight: 60,
+    shadowRadius: 4,
+    elevation: 3,
+    minHeight: 80,
+    justifyContent: 'space-between',
   },
   name: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
-    marginBottom: 2,
+    marginBottom: 4,
+    textAlign: 'center',
+    height: 36,
   },
   price: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: COLORS.primary,
+    textAlign: 'center',
   },
   quantityBadge: {
     position: 'absolute',
-    right: -5,
-    top: -5,
+    right: -8,
+    top: -8,
     backgroundColor: COLORS.primary,
+    borderRadius: 14,
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  quantityText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  minusButton: {
+    position: 'absolute',
+    left: -8,
+    top: -8,
+    zIndex: 1,
+    backgroundColor: 'white',
     borderRadius: 12,
     width: 24,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  quantityText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  decrementButton: {
-    position: 'absolute',
-    left: -5,
-    top: -5,
-    zIndex: 1,
-    backgroundColor: 'white',
-    borderRadius: 10,
   },
 });

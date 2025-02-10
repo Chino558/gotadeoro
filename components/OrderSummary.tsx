@@ -18,8 +18,12 @@ export function OrderSummary({ total, itemCount, onCheckout, onPress }: OrderSum
           <Text style={styles.total}>${total}</Text>
         </View>
       </Pressable>
-      <Pressable style={styles.checkoutButton} onPress={onCheckout}>
-        <Text style={styles.checkoutText}>Checkout</Text>
+      <Pressable 
+        style={[styles.checkoutButton, itemCount === 0 && styles.checkoutButtonDisabled]}
+        onPress={onCheckout}
+        disabled={itemCount === 0}
+      >
+        <Text style={styles.checkoutText}>Ver Cuenta</Text>
       </Pressable>
     </View>
   );
@@ -34,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
-    paddingBottom: 34, // Safe area
+    paddingBottom: 34,
   },
   content: {
     padding: 16,
@@ -60,6 +64,9 @@ const styles = StyleSheet.create({
     marginTop: 0,
     borderRadius: 12,
     alignItems: 'center',
+  },
+  checkoutButtonDisabled: {
+    backgroundColor: '#ccc',
   },
   checkoutText: {
     color: 'white',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Pressable, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { OrderItem } from '../types';
 import { COLORS } from '../theme';
@@ -13,38 +13,54 @@ interface CheckoutScreenProps {
 export function CheckoutScreen({ items, tableNumber, onClose }: CheckoutScreenProps) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  if (items.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Mesa {tableNumber}</Text>
+          <Pressable onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color="white" />
+          </Pressable>
+        </View>
+        <View style={styles.emptyState}>
+          <Ionicons name="receipt-outline" size={48} color={COLORS.primary} />
+          <Text style={styles.emptyText}>No hay artículos en la orden</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Mesa {tableNumber} - Cuenta</Text>
+        <Text style={styles.title}>Mesa {tableNumber}</Text>
         <Pressable onPress={onClose} style={styles.closeButton}>
-          <Ionicons name="close" size={24} color={COLORS.text} />
+          <Ionicons name="close" size={24} color="white" />
         </Pressable>
       </View>
       
       <ScrollView style={styles.content}>
-        <View style={styles.itemsHeader}>
-          <Text style={styles.columnHeader}>Artículo</Text>
-          <Text style={styles.columnHeader}>Cant.</Text>
-          <Text style={styles.columnHeader}>Precio</Text>
-          <Text style={styles.columnHeader}>Total</Text>
+        <View style={styles.receiptHeader}>
+          <Text style={styles.restaurantName}>La Gota de Oro</Text>
+          <Text style={styles.receiptTitle}>Cuenta</Text>
         </View>
-        
+
         {items.map((item) => (
           <View key={item.id} style={styles.itemRow}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemQuantity}>{item.quantity}</Text>
-            <Text style={styles.itemPrice}>${item.price}</Text>
+            <View style={styles.itemInfo}>
+              <Text style={styles.itemName}>{item.name}</Text>
+              <Text style={styles.itemQuantity}>{item.quantity} × ${item.price}</Text>
+            </View>
             <Text style={styles.itemTotal}>${item.price * item.quantity}</Text>
           </View>
         ))}
         
         <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>Total a Pagar</Text>
+          <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalAmount}>${total}</Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -63,8 +79,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
     backgroundColor: COLORS.primary,
   },
   title: {
@@ -77,45 +91,46 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 20,
   },
-  itemsHeader: {
-    flexDirection: 'row',
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primary,
-    marginBottom: 8,
+  receiptHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  columnHeader: {
-    fontWeight: '600',
-    fontSize: 14,
+  restaurantName: {
+    fontSize: 24,
+    fontWeight: '700',
     color: COLORS.primary,
+    marginBottom: 4,
+  },
+  receiptTitle: {
+    fontSize: 18,
+    color: '#666',
   },
   itemRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
+  itemInfo: {
+    flex: 1,
+  },
   itemName: {
-    flex: 2,
-    fontSize: 16,
-  },
-  itemQuantity: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  itemPrice: {
-    flex: 1,
-    textAlign: 'right',
-    fontSize: 16,
-  },
-  itemTotal: {
-    flex: 1,
-    textAlign: 'right',
     fontSize: 16,
     fontWeight: '500',
+  },
+  itemQuantity: {
+    fontSize: 14,
+    color: COLORS.primary,
+    marginTop: 4,
+  },
+  itemTotal: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 16,
   },
   totalContainer: {
     flexDirection: 'row',
@@ -134,5 +149,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: COLORS.primary,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 16,
   },
 });
