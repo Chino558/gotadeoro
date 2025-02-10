@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { 
   StyleSheet, 
   View, 
   Text, 
   Modal, 
-  Pressable, 
-  Animated, 
-  Dimensions,
+  Pressable,
   ScrollView 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,28 +18,7 @@ interface BillBreakdownProps {
   onClose: () => void;
 }
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-
 export function BillBreakdown({ visible, items, tableNumber, onClose }: BillBreakdownProps) {
-  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        useNativeDriver: true,
-        tension: 65,
-        friction: 11
-      }).start();
-    } else {
-      Animated.timing(slideAnim, {
-        toValue: SCREEN_HEIGHT,
-        duration: 250,
-        useNativeDriver: true
-      }).start();
-    }
-  }, [visible]);
-
   if (!visible) return null;
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -50,36 +27,22 @@ export function BillBreakdown({ visible, items, tableNumber, onClose }: BillBrea
     <Modal
       transparent={true}
       visible={visible}
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <Animated.View 
-          style={[
-            styles.container,
-            {
-              transform: [{ translateY: slideAnim }]
-            }
-          ]}
-        >
-          <View style={styles.handle} />
-          
+        <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Mesa {tableNumber}</Text>
-            <Pressable onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#666" />
+            <Text style={styles.title}>Cuenta - Mesa {tableNumber}</Text>
+            <Pressable onPress={onClose} hitSlop={8}>
+              <Ionicons name="close" size={24} color="#000" />
             </Pressable>
           </View>
 
           <ScrollView style={styles.content}>
-            <View style={styles.billHeader}>
-              <Text style={styles.restaurantName}>La Gota de Oro</Text>
-              <Text style={styles.billTitle}>Cuenta</Text>
-            </View>
-
             {items.map((item) => (
               <View key={item.id} style={styles.itemRow}>
-                <View style={styles.itemInfo}>
+                <View style={styles.itemDetails}>
                   <Text style={styles.itemName}>{item.name}</Text>
                   <Text style={styles.itemQuantity}>
                     {item.quantity} × ${item.price.toFixed(2)}
@@ -90,13 +53,13 @@ export function BillBreakdown({ visible, items, tableNumber, onClose }: BillBrea
                 </Text>
               </View>
             ))}
-
-            <View style={styles.totalContainer}>
-              <Text style={styles.totalLabel}>Total</Text>
-              <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
-            </View>
           </ScrollView>
-        </Animated.View>
+
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>Total</Text>
+            <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
+          </View>
+        </View>
       </View>
     </Modal>
   );
@@ -106,101 +69,74 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
+    width: '90%',
+    maxHeight: '80%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    minHeight: SCREEN_HEIGHT * 0.6,
-    maxHeight: SCREEN_HEIGHT * 0.9,
-    paddingBottom: 34, // Safe area
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginTop: 12,
-    marginBottom: 8,
+    borderRadius: 12,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
+    borderBottomColor: '#E5E5E5',
   },
-  headerTitle: {
-    fontSize: 20,
+  title: {
+    fontSize: 18,
     fontWeight: '600',
-    color: COLORS.primary,
-  },
-  closeButton: {
-    padding: 8,
   },
   content: {
-    flex: 1,
-  },
-  billHeader: {
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
-  },
-  restaurantName: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: COLORS.primary,
-    marginBottom: 4,
-  },
-  billTitle: {
-    fontSize: 16,
-    color: '#666',
+    padding: 16,
   },
   itemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
+    alignItems: 'flex-start',
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
+    borderBottomColor: '#F0F0F0',
   },
-  itemInfo: {
+  itemDetails: {
     flex: 1,
   },
   itemName: {
     fontSize: 16,
     fontWeight: '500',
+    marginBottom: 4,
   },
   itemQuantity: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
   },
   itemTotal: {
     fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.primary,
+    fontWeight: '500',
+    marginLeft: 16,
   },
   totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    borderTopWidth: 2,
-    borderTopColor: COLORS.primary,
-    marginTop: 20,
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
   },
   totalLabel: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
   },
   totalAmount: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: '700',
-    color: COLORS.primary,
   },
 });

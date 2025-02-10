@@ -1,10 +1,8 @@
-// Add this import at the top:
-import { BillBreakdown } from '../components/BillBreakdown';
-
-// In your main component, update the return statement to include:
 export default function CalculadoraScreen() {
-  // ... existing state and functions ...
+  // ... other state ...
   const [showBill, setShowBill] = useState(false);
+
+  // ... other code ...
 
   return (
     <View style={styles.container}>
@@ -13,7 +11,7 @@ export default function CalculadoraScreen() {
       <OrderSummary
         total={total}
         itemCount={itemCount}
-        onCheckout={() => setShowBill(true)}
+        onCheckout={() => setShowBill(true)} // Make sure this is connected
       />
       
       <BillBreakdown
