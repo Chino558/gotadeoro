@@ -39,6 +39,7 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
         <Pressable 
           onPress={handleDecrement}
           style={styles.decrementButton}
+          hitSlop={8}
         >
           <Ionicons name="remove-circle" size={20} color={COLORS.error} />
         </Pressable>

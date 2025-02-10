@@ -8,7 +8,6 @@ import { TableTabs } from '../components/TableTabs';
 import { menuItems } from '../data/menuItems';
 import { OrderItem } from '../types';
 import { COLORS } from '../theme';
-import { Ionicons } from '@expo/vector-icons';
 
 interface TableOrders {
   [tableNumber: number]: Record<string, OrderItem>;
@@ -110,14 +109,13 @@ export default function CalculadoraScreen() {
       <OrderSummary
         total={total}
         itemCount={itemCount}
-        onCheckout={() => setShowBreakdown(true)}
+        onPress={() => setShowBreakdown(true)}
       />
-      {showBreakdown && (
-        <OrderBreakdown
-          items={orderItemsList}
-          onClose={() => setShowBreakdown(false)}
-        />
-      )}
+      <OrderBreakdown
+        visible={showBreakdown}
+        items={orderItemsList}
+        onClose={() => setShowBreakdown(false)}
+      />
     </View>
   );
 }
