@@ -6,25 +6,24 @@ interface OrderSummaryProps {
   total: number;
   itemCount: number;
   onCheckout: () => void;
-  onPress: () => void;
 }
 
-export function OrderSummary({ total, itemCount, onCheckout, onPress }: OrderSummaryProps) {
+export function OrderSummary({ total, itemCount, onCheckout }: OrderSummaryProps) {
   return (
     <View style={styles.container}>
-      <Pressable style={styles.content} onPress={onPress}>
+      <View style={styles.content}>
         <View style={styles.info}>
           <Text style={styles.itemCount}>{itemCount} artículos</Text>
-          <Text style={styles.total}>${total}</Text>
+          <Text style={styles.total}>${total.toFixed(2)}</Text>
         </View>
-      </Pressable>
-      <Pressable 
-        style={[styles.checkoutButton, itemCount === 0 && styles.checkoutButtonDisabled]}
-        onPress={onCheckout}
-        disabled={itemCount === 0}
-      >
-        <Text style={styles.checkoutText}>Ver Cuenta</Text>
-      </Pressable>
+        <Pressable 
+          style={[styles.checkoutButton, itemCount === 0 && styles.checkoutButtonDisabled]}
+          onPress={onCheckout}
+          disabled={itemCount === 0}
+        >
+          <Text style={styles.checkoutText}>Ver Cuenta</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -37,8 +36,8 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
-    paddingBottom: 34,
+    borderTopColor: '#EEE',
+    paddingBottom: 34, // Safe area
   },
   content: {
     padding: 16,
@@ -47,6 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
   },
   itemCount: {
     fontSize: 16,
@@ -60,13 +60,11 @@ const styles = StyleSheet.create({
   checkoutButton: {
     backgroundColor: COLORS.primary,
     padding: 16,
-    margin: 16,
-    marginTop: 0,
     borderRadius: 12,
     alignItems: 'center',
   },
   checkoutButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#CCC',
   },
   checkoutText: {
     color: 'white',
