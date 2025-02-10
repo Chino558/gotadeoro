@@ -72,6 +72,7 @@ export default function HomeScreen() {
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.id}
+        numColumns={2}
         renderItem={({ item }) => (
           <MenuItem
             item={item}
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    paddingVertical: 16,
+    padding: 8,
+    paddingBottom: 100, // Extra padding for the order summary
   },
 });
