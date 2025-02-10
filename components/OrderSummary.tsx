@@ -5,10 +5,10 @@ import { COLORS } from '../theme';
 interface OrderSummaryProps {
   total: number;
   itemCount: number;
-  onCheckout: () => void;
+  onShowBill: () => void;  // Renamed to be more clear
 }
 
-export function OrderSummary({ total, itemCount, onCheckout }: OrderSummaryProps) {
+export function OrderSummary({ total, itemCount, onShowBill }: OrderSummaryProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -18,11 +18,8 @@ export function OrderSummary({ total, itemCount, onCheckout }: OrderSummaryProps
         </View>
         <Pressable 
           style={[styles.checkoutButton, itemCount === 0 && styles.checkoutButtonDisabled]}
-          onPress={() => {
-            if (itemCount > 0) {
-              onCheckout();
-            }
-          }}
+          onPress={onShowBill}
+          disabled={itemCount === 0}
         >
           <Text style={styles.checkoutText}>Ver Cuenta</Text>
         </Pressable>
@@ -40,7 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#EEE',
-    paddingBottom: 34, // Safe area
+    paddingBottom: 34,
   },
   content: {
     padding: 16,
