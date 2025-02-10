@@ -27,7 +27,7 @@
       [
         "expo-router",
         {
-          "origin": "https://${SUBDOMAIN}.dev.appacella.com"
+          "origin": "https://project-968c4e84.dev.appacella.com"
         }
       ],
       [
