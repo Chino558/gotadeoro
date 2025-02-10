@@ -13,8 +13,8 @@ interface MenuItemProps {
 }
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CARD_MARGIN = 8;
-const NUM_COLUMNS = 2;
+const CARD_MARGIN = 4;
+const NUM_COLUMNS = 3; // Changed to 3 columns
 const CARD_WIDTH = (SCREEN_WIDTH - (NUM_COLUMNS + 1) * CARD_MARGIN * 2) / NUM_COLUMNS;
 
 export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemProps) {
@@ -32,22 +32,19 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
 
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Ionicons name="restaurant-outline" size={20} color={COLORS.primary} />
-        <Text style={styles.price}>${item.price}</Text>
-      </View>
-      <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
+      <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
+      <Text style={styles.price}>${item.price}</Text>
       <View style={styles.quantityContainer}>
         <Pressable onPress={handleDecrement} style={styles.button}>
           <Ionicons 
-            name="remove-circle-outline" 
-            size={24} 
+            name="remove" 
+            size={18} 
             color={quantity > 0 ? COLORS.primary : COLORS.border} 
           />
         </Pressable>
         <Text style={styles.quantity}>{quantity}</Text>
         <Pressable onPress={handleIncrement} style={styles.button}>
-          <Ionicons name="add-circle-outline" size={24} color={COLORS.primary} />
+          <Ionicons name="add" size={18} color={COLORS.primary} />
         </Pressable>
       </View>
     </View>
@@ -58,45 +55,38 @@ const styles = StyleSheet.create({
   container: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
-    borderRadius: 12,
+    borderRadius: 8,
     margin: CARD_MARGIN,
-    padding: 12,
+    padding: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    shadowRadius: 2,
+    elevation: 2,
   },
   name: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
-    marginBottom: 8,
-    height: 40, // Fixed height for 2 lines
+    marginBottom: 2,
   },
   price: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.primary,
+    marginBottom: 4,
   },
   quantityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 'auto',
   },
   button: {
     padding: 4,
   },
   quantity: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    minWidth: 24,
+    minWidth: 20,
     textAlign: 'center',
   },
 });

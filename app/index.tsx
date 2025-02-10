@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, FlatList, useColorScheme } from 'react-native';
+import { StyleSheet, View, FlatList, useColorScheme, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { MenuItem } from '../components/MenuItem';
 import { OrderSummary } from '../components/OrderSummary';
+import { FloatingActionButton } from '../components/FloatingActionButton';
 import { menuItems } from '../data/menuItems';
 import { OrderItem } from '../types';
 import { COLORS } from '../theme';
@@ -10,6 +11,7 @@ import { COLORS } from '../theme';
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem>>({});
+  const [currentTable, setCurrentTable] = useState(1);
 
   const handleIncrement = useCallback((itemId: string) => {
     setOrderItems((prev) => {
@@ -48,6 +50,14 @@ export default function HomeScreen() {
     });
   }, []);
 
+  const handleNewTable = () => {
+    // Save current order if needed
+    // Reset the order items
+    setOrderItems({});
+    // Increment table number
+    setCurrentTable(prev => prev + 1);
+  };
+
   const total = Object.values(orderItems).reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -58,21 +68,19 @@ export default function HomeScreen() {
     0
   );
 
-  const handleCheckout = () => {
-    // Implement checkout logic
-    console.log('Order:', orderItems);
-  };
-
   return (
     <View style={[
       styles.container,
       { backgroundColor: colorScheme === 'dark' ? COLORS.backgroundDark : COLORS.background }
     ]}>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <View style={styles.header}>
+        <Text style={styles.tableText}>Mesa {currentTable}</Text>
+      </View>
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={3}
         renderItem={({ item }) => (
           <MenuItem
             item={item}
@@ -83,10 +91,13 @@ export default function HomeScreen() {
         )}
         contentContainerStyle={styles.list}
       />
+      <FloatingActionButton onPress={handleNewTable} />
       <OrderSummary
         total={total}
         itemCount={itemCount}
-        onCheckout={handleCheckout}
+        onCheckout={() => {
+          console.log(`Table ${currentTable} order:`, orderItems);
+        }}
       />
     </View>
   );
@@ -96,8 +107,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header: {
+    padding: 16,
+    paddingBottom: 8,
+  },
+  tableText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: COLORS.primary,
+  },
   list: {
-    padding: 8,
+    padding: 4,
     paddingBottom: 100, // Extra padding for the order summary
   },
 });
