@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, useColorScheme, Text, Pressable } from 'rea
 import { StatusBar } from 'expo-status-bar';
 import { MenuItem } from '../components/MenuItem';
 import { OrderSummary } from '../components/OrderSummary';
-import { OrderDetails } from '../components/OrderDetails';
+import { OrderBreakdown } from '../components/OrderBreakdown';
 import { TableTabs } from '../components/TableTabs';
 import { menuItems } from '../data/menuItems';
 import { OrderItem } from '../types';
@@ -16,10 +16,9 @@ interface TableOrders {
 
 export default function CalculadoraScreen() {
   const colorScheme = useColorScheme();
-  const [tableOrders, setTableOrders] = useState<TableOrders>({ 1: {} });
-  const [tables, setTables] = useState<number[]>([1]);
+  const [tableOrders, setTableOrders] = useState<TableOrders>({ 1: {}, 2: {}, 3: {}, 4: {} });
   const [currentTable, setCurrentTable] = useState(1);
-  const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const currentOrderItems = tableOrders[currentTable] || {};
 
@@ -69,21 +68,6 @@ export default function CalculadoraScreen() {
     });
   }, [currentTable]);
 
-  const handleAddTable = () => {
-    const newTable = Math.max(...tables) + 1;
-    setTables(prev => [...prev, newTable]);
-    setTableOrders(prev => ({
-      ...prev,
-      [newTable]: {},
-    }));
-    setCurrentTable(newTable);
-  };
-
-  const handleTableChange = (table: number) => {
-    setCurrentTable(table);
-    setShowOrderDetails(false);
-  };
-
   const total = Object.values(currentOrderItems).reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -106,10 +90,8 @@ export default function CalculadoraScreen() {
         <Text style={styles.title}>La Gota de Oro</Text>
       </View>
       <TableTabs
-        tables={tables}
         currentTable={currentTable}
-        onTableChange={handleTableChange}
-        onAddTable={handleAddTable}
+        onTableChange={setCurrentTable}
       />
       <FlatList
         data={menuItems}
@@ -125,26 +107,17 @@ export default function CalculadoraScreen() {
         )}
         contentContainerStyle={styles.list}
       />
-      <Pressable 
-        style={styles.orderDetailsButton}
-        onPress={() => setShowOrderDetails(true)}
-      >
-        <Ionicons name="list" size={24} color={COLORS.primary} />
-      </Pressable>
-      {showOrderDetails && (
-        <OrderDetails
-          items={orderItemsList}
-          onClose={() => setShowOrderDetails(false)}
-          onDecrement={handleDecrement}
-        />
-      )}
       <OrderSummary
         total={total}
         itemCount={itemCount}
-        onCheckout={() => {
-          console.log(`Table ${currentTable} order:`, currentOrderItems);
-        }}
+        onCheckout={() => setShowBreakdown(true)}
       />
+      {showBreakdown && (
+        <OrderBreakdown
+          items={orderItemsList}
+          onClose={() => setShowBreakdown(false)}
+        />
+      )}
     </View>
   );
 }
@@ -167,21 +140,5 @@ const styles = StyleSheet.create({
   list: {
     padding: 4,
     paddingBottom: 100,
-  },
-  orderDetailsButton: {
-    position: 'absolute',
-    right: 16,
-    bottom: 120,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
 });

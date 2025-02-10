@@ -1,69 +1,54 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Pressable, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 import { COLORS } from '../theme';
 
 interface TableTabsProps {
-  tables: number[];
   currentTable: number;
   onTableChange: (table: number) => void;
-  onAddTable: () => void;
 }
 
-export function TableTabs({ tables, currentTable, onTableChange, onAddTable }: TableTabsProps) {
+export function TableTabs({ currentTable, onTableChange }: TableTabsProps) {
   return (
     <View style={styles.container}>
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {tables.map((table) => (
-          <Pressable
-            key={table}
-            style={[
-              styles.tab,
-              currentTable === table && styles.activeTab
-            ]}
-            onPress={() => onTableChange(table)}
-          >
-            <Text style={[
-              styles.tabText,
-              currentTable === table && styles.activeTabText
-            ]}>
-              Mesa {table}
-            </Text>
-          </Pressable>
-        ))}
+      {[1, 2, 3, 4].map((table) => (
         <Pressable
-          style={styles.addButton}
-          onPress={onAddTable}
+          key={table}
+          style={[
+            styles.tab,
+            currentTable === table && styles.activeTab
+          ]}
+          onPress={() => onTableChange(table)}
         >
-          <Ionicons name="add-circle" size={24} color={COLORS.primary} />
+          <Text style={[
+            styles.tabText,
+            currentTable === table && styles.activeTabText
+          ]}>
+            Mesa {table}
+          </Text>
         </Pressable>
-      </ScrollView>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     backgroundColor: 'white',
+    padding: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 3,
   },
-  scrollContent: {
-    paddingHorizontal: 8,
-  },
   tab: {
-    paddingHorizontal: 16,
+    flex: 1,
     paddingVertical: 12,
     marginHorizontal: 4,
     borderRadius: 8,
     backgroundColor: '#f0f0f0',
+    alignItems: 'center',
   },
   activeTab: {
     backgroundColor: COLORS.primary,
@@ -75,10 +60,5 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: 'white',
-  },
-  addButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    justifyContent: 'center',
   },
 });
