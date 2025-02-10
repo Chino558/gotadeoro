@@ -1,25 +1,11 @@
-export default function CalculadoraScreen() {
-  // ... other state ...
-  const [showBill, setShowBill] = useState(false);
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { OrderSummary } from '../components/OrderSummary';
+import { BillBreakdown } from '../components/BillBreakdown';
+import { MenuItem } from '../components/MenuItem';
+import { TableTabs } from '../components/TableTabs';
+import { menuItems } from '../data/menuItems';
+import { COLORS } from '../theme';
 
-  // ... other code ...
-
-  return (
-    <View style={styles.container}>
-      {/* ... other components ... */}
-      
-      <OrderSummary
-        total={total}
-        itemCount={itemCount}
-        onCheckout={() => setShowBill(true)} // Make sure this is connected
-      />
-      
-      <BillBreakdown
-        visible={showBill}
-        items={orderItemsList}
-        tableNumber={currentTable}
-        onClose={() => setShowBill(false)}
-      />
-    </View>
-  );
-}
+// ... rest of the code ...
