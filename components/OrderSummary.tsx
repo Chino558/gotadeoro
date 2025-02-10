@@ -1,30 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { router } from 'expo-router';
 import { COLORS } from '../theme';
 
 interface OrderSummaryProps {
   total: number;
   itemCount: number;
-  tableNumber: number;
-  items: Record<string, any>;
+  onCheckout: () => void;
 }
 
-export function OrderSummary({ total, itemCount, tableNumber, items }: OrderSummaryProps) {
-  const handleShowBill = () => {
-    if (itemCount > 0) {
-      const encodedItems = encodeURIComponent(JSON.stringify(items));
-      router.push({
-        pathname: '/bill',
-        params: {
-          tableNumber,
-          items: encodedItems,
-          total: total.toFixed(2),
-        },
-      });
-    }
-  };
-
+export function OrderSummary({ total, itemCount, onCheckout }: OrderSummaryProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -34,7 +18,7 @@ export function OrderSummary({ total, itemCount, tableNumber, items }: OrderSumm
         </View>
         <Pressable 
           style={[styles.checkoutButton, itemCount === 0 && styles.checkoutButtonDisabled]}
-          onPress={handleShowBill}
+          onPress={onCheckout}
           disabled={itemCount === 0}
         >
           <Text style={styles.checkoutText}>Ver Cuenta</Text>
