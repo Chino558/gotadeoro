@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "user-app",
-    "slug": "user-app",
+    "name": "Gota de Oro",
+    "slug": "gota-de-oro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.lagotadeoro.app"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +27,7 @@
       [
         "expo-router",
         {
-          "origin": "https://project-968c4e84.dev.appacella.com"
+          "origin": false
         }
       ],
       [
@@ -42,6 +42,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f5c058de-d072-48b3-ab9d-0329e610ad06"
+      }
     }
   }
 }

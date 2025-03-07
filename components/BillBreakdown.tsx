@@ -35,7 +35,7 @@ export function BillBreakdown({ visible, items, tableNumber, onClose }: BillBrea
           <View style={styles.header}>
             <Text style={styles.title}>Cuenta - Mesa {tableNumber}</Text>
             <Pressable onPress={onClose} hitSlop={8}>
-              <Ionicons name="close" size={24} color="#000" />
+              <Ionicons name="close" size={24} color={COLORS.text} />
             </Pressable>
           </View>
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: COLORS.primaryDark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -89,11 +89,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.primaryLight,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
+    color: COLORS.primary,
   },
   content: {
     padding: 16,
@@ -104,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: COLORS.border,
   },
   itemDetails: {
     flex: 1,
@@ -112,16 +116,18 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '500',
+    color: COLORS.text,
     marginBottom: 4,
   },
   itemQuantity: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textLight,
   },
   itemTotal: {
     fontSize: 16,
     fontWeight: '500',
     marginLeft: 16,
+    color: COLORS.primary,
   },
   totalContainer: {
     flexDirection: 'row',
@@ -129,14 +135,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+    borderTopColor: COLORS.border,
+    backgroundColor: COLORS.primaryLight,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
   totalLabel: {
     fontSize: 18,
     fontWeight: '600',
+    color: COLORS.text,
   },
   totalAmount: {
     fontSize: 20,
     fontWeight: '700',
+    color: COLORS.primary,
   },
 });

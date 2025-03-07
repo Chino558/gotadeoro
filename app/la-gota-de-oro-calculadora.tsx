@@ -2,17 +2,27 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
-import { MenuItem } from '../components/MenuItem';
-import { OrderSummary } from '../components/OrderSummary';
 import { TableTabs } from '../components/TableTabs';
+import { EnhancedOrderSummary } from '../components/OrderSummary';
+import { MenuItem } from '../types';
+import type { OrderItem } from '../types';
 import { menuItems } from '../data/menuItems';
 import { COLORS } from '../theme';
+interface TableOrders {
+  [key: number]: {
+    [key: string]: OrderItem;
+  };
+}
 
 export default function CalculadoraScreen() {
-  const [tableOrders, setTableOrders] = useState({ 1: {}, 2: {}, 3: {}, 4: {} });
+  const [tableOrders, setTableOrders] = useState<TableOrders>({ 1: {}, 2: {}, 3: {}, 4: {} });
   const [currentTable, setCurrentTable] = useState(1);
 
   const currentOrderItems = tableOrders[currentTable] || {};
+
+  const handleClearAll = () => {
+    setTableOrders({ 1: {}, 2: {}, 3: {}, 4: {} });
+  };
 
   const handleIncrement = (itemId: string) => {
     setTableOrders(prev => {
@@ -61,12 +71,12 @@ export default function CalculadoraScreen() {
   };
 
   const total = Object.values(currentOrderItems).reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum: number, item: OrderItem) => sum + item.price * item.quantity,
     0
   );
 
   const itemCount = Object.values(currentOrderItems).reduce(
-    (sum, item) => sum + item.quantity,
+    (sum: number, item: OrderItem) => sum + item.quantity,
     0
   );
 
@@ -89,17 +99,15 @@ export default function CalculadoraScreen() {
         keyExtractor={item => item.id}
         numColumns={3}
         renderItem={({ item }) => (
-          <MenuItem
-            item={item}
-            quantity={currentOrderItems[item.id]?.quantity || 0}
-            onIncrement={() => handleIncrement(item.id)}
-            onDecrement={() => handleDecrement(item.id)}
+          <TableTabs
+            currentTable={currentTable}
+            onTableChange={setCurrentTable}
           />
         )}
         contentContainerStyle={styles.list}
       />
 
-      <OrderSummary
+      <EnhancedOrderSummary
         total={total}
         itemCount={itemCount}
         onCheckout={() => {
@@ -107,11 +115,12 @@ export default function CalculadoraScreen() {
             pathname: '/bill',
             params: {
               tableNumber: currentTable,
-              items: encodeURIComponent(JSON.stringify(orderItemsList)),
+              items: JSON.stringify(orderItemsList),
               total: total
             }
           });
         }}
+        onClearAll={handleClearAll}
       />
     </View>
   );
