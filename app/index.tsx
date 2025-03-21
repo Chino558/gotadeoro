@@ -312,6 +312,10 @@ export default function HomeScreen() {
               />
             )}
             contentContainerStyle={styles.list}
+            columnWrapperStyle={styles.columnWrapper}
+            initialNumToRender={15} // Render more items initially
+            windowSize={5} // Increase window size for better perf
+            maxToRenderPerBatch={12} // Render more items in each batch
             showsVerticalScrollIndicator={false}
           />
         </Animated.View>
@@ -390,11 +394,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    padding: 8,
-    paddingBottom: 180, // Further increased padding at the bottom for better scrolling
+    padding: 4, // Reduced padding
+    paddingBottom: 180, // Keep the bottom padding for scrolling
   },
   swipeIndicator: {
     width: 10,
     backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', // Ensure cards are evenly distributed
+    paddingHorizontal: 2, // Small horizontal padding
   },
 });

@@ -13,7 +13,7 @@ interface MenuItemProps {
 }
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CARD_MARGIN = 5;
+const CARD_MARGIN = 3; // Reduced margin
 const NUM_COLUMNS = 3;
 const CARD_WIDTH = (SCREEN_WIDTH - (NUM_COLUMNS + 1) * CARD_MARGIN * 2) / NUM_COLUMNS;
 
@@ -41,7 +41,7 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
   };
   
   // Determine if this is a long item name that needs special styling
-  const isLongName = item.name.length > 25;
+  const isLongName = item.name.length > 20; // Reduced threshold for long names
 
   return (
     <Pressable
@@ -67,7 +67,7 @@ export function MenuItem({ item, quantity, onIncrement, onDecrement }: MenuItemP
             style={styles.minusButton}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Ionicons name="remove" size={16} color="white" />
+            <Ionicons name="remove" size={14} color="white" />
           </Pressable>
 
           <View style={styles.quantityBadge}>
@@ -85,13 +85,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderRadius: 14,
     margin: CARD_MARGIN,
-    padding: 12,
+    padding: 8, // Reduced padding
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 3,
-    minHeight: 90,
+    shadowRadius: 4, // Reduced shadow
+    elevation: 2, // Reduced elevation
+    minHeight: 80, // Reduced height
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     position: 'relative',
@@ -107,68 +107,68 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 4,
-    paddingBottom: 8,
+    paddingTop: 2,
+    paddingBottom: 4,
   },
   name: {
-    fontSize: 14,
+    fontSize: 13, // Smaller font
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 6, // Reduced margin
     textAlign: 'center',
     color: COLORS.text,
-    minHeight: 36,
-    lineHeight: 18,
+    minHeight: 32, // Reduced height
+    lineHeight: 16, // Reduced line height
   },
   smallerText: {
-    fontSize: 12,
-    lineHeight: 16,
-    minHeight: 48,
+    fontSize: 11, // Smaller font for long names
+    lineHeight: 14, // Tighter line height
+    minHeight: 42, // Reduced but still gives space for 3 lines
   },
   priceTag: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    minWidth: 50,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    minWidth: 45,
     alignItems: 'center',
   },
   price: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: '#D9534F',
     textAlign: 'center',
   },
   quantityBadge: {
     position: 'absolute',
-    right: -8,
-    top: -8,
+    right: -6,
+    top: -6,
     backgroundColor: COLORS.primary,
-    borderRadius: 14,
-    width: 28,
-    height: 28,
+    borderRadius: 12,
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: 'white',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 5,
+    shadowRadius: 2,
+    elevation: 3,
   },
   quantityText: {
     color: 'white',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
   },
   minusButton: {
     position: 'absolute',
-    left: -8,
-    top: -8,
+    left: -6,
+    top: -6,
     zIndex: 5,
     backgroundColor: COLORS.accent,
-    borderRadius: 12,
-    width: 22,
-    height: 22,
+    borderRadius: 10,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
+    shadowRadius: 1,
+    elevation: 2,
   },
 });
