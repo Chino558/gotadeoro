@@ -1,0 +1,34 @@
+name: Simple iOS Build (Manual Only)
+
+on:
+  workflow_dispatch: # Allows manual triggering from the Actions tab
+
+jobs:
+  build:
+    name: Build Unsigned iOS IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # Use 'beta' or 'dev' if needed, or a specific version '3.x.x'
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Clean previous build (optional)
+        run: flutter clean
+
+      - name: Build iOS (unsigned IPA)
+        run: flutter build ipa --no-codesign
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simple-flutter-ios-ipa # Artifact name
+          path: build/ios/ipa/*.ipa # Path to the IPA file(s)
+          if-no-files-found: error # Fail if no IPA is found
