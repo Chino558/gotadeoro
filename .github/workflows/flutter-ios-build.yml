@@ -41,11 +41,11 @@ jobs:
 
       - name: Install Flutter dependencies
         run: flutter pub get
-        working-directory: ./gotadeoroflutter
+        working-directory: gotadeoroflutter
 
       - name: Clean previous build (optional)
         run: flutter clean
-        working-directory: ./gotadeoroflutter
+        working-directory: gotadeoroflutter
 
       - name: Build iOS (unsigned IPA)
         run: |
@@ -54,7 +54,7 @@ jobs:
           else
             flutter build ipa --no-codesign
           fi
-        working-directory: ./gotadeoroflutter
+        working-directory: gotadeoroflutter
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
