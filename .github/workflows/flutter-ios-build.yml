@@ -41,9 +41,11 @@ jobs:
 
       - name: Install Flutter dependencies
         run: flutter pub get
+        working-directory: ./gotadeoroflutter
 
       - name: Clean previous build (optional)
         run: flutter clean
+        working-directory: ./gotadeoroflutter
 
       - name: Build iOS (unsigned IPA)
         run: |
@@ -52,19 +54,20 @@ jobs:
           else
             flutter build ipa --no-codesign
           fi
+        working-directory: ./gotadeoroflutter
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-ios-ipa # Artifact name
-          path: build/ios/ipa/*.ipa # Path to the IPA file(s)
+          path: gotadeoroflutter/build/ios/ipa/*.ipa # Path to the IPA file(s)
           if-no-files-found: error # Fail if no IPA is found
 
       - name: Create GitHub Release (if specified)
         if: github.event.inputs.create_release == 'true' && github.event.inputs.release_tag != ''
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/ios/ipa/*.ipa"
+          artifacts: "gotadeoroflutter/build/ios/ipa/*.ipa"
           tag: ${{ github.event.inputs.release_tag }}
           name: "Release ${{ github.event.inputs.release_tag }}"
           body: "Automated iOS build for release ${{ github.event.inputs.release_tag }}"
