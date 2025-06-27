@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/gotadeoro.iml" filepath="$PROJECT_DIR$/.idea/gotadeoro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gotaflutter.iml" filepath="$PROJECT_DIR$/gotaflutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/gotaflutter_android.iml" filepath="$PROJECT_DIR$/android/gotaflutter_android.iml" />
     </modules>
   </component>
 </project>
