@@ -3,7 +3,7 @@ import { OrderItem } from 'types';
 import { SaleRecord } from './storage';
 
 // WhatsApp number for the owner
-const OWNER_WHATSAPP = '+525577983551'; // Updated to the new number
+const OWNER_WHATSAPP = '+525528124944';
 
 // Send current order to WhatsApp
 export const sendOrderToWhatsApp = async (
@@ -28,27 +28,20 @@ export const sendOrderToWhatsApp = async (
     // Encode the message for the URL
     const encodedMessage = encodeURIComponent(message);
 
-    // Create the WhatsApp URL - Use both URL schemes for better compatibility
+    // Create the WhatsApp URL
     const whatsappUrl = `whatsapp://send?phone=${OWNER_WHATSAPP}&text=${encodedMessage}`;
-    const webWhatsappUrl = `https://wa.me/${OWNER_WHATSAPP}?text=${encodedMessage}`;
 
     // Check if WhatsApp is installed
-    const canOpenApp = await Linking.canOpenURL(whatsappUrl);
+    const canOpen = await Linking.canOpenURL(whatsappUrl);
     
-    if (canOpenApp) {
-      // Open WhatsApp app with the message
-      await Linking.openURL(whatsappUrl);
-      return true;
-    } else {
-      // Try web version if app is not installed
-      try {
-        await Linking.openURL(webWhatsappUrl);
-        return true;
-      } catch (webError) {
-        console.log('WhatsApp is not accessible via web either:', webError);
-        return false;
-      }
+    if (!canOpen) {
+      console.log('WhatsApp is not installed');
+      return false;
     }
+
+    // Open WhatsApp with the message
+    await Linking.openURL(whatsappUrl);
+    return true;
   } catch (error) {
     console.error('Error sending order to WhatsApp:', error);
     return false;
@@ -110,27 +103,20 @@ export const sendSalesReportToWhatsApp = async (
     // Encode the message for the URL
     const encodedMessage = encodeURIComponent(message);
 
-    // Create the WhatsApp URLs - Use both URL schemes for better compatibility
+    // Create the WhatsApp URL
     const whatsappUrl = `whatsapp://send?phone=${OWNER_WHATSAPP}&text=${encodedMessage}`;
-    const webWhatsappUrl = `https://wa.me/${OWNER_WHATSAPP}?text=${encodedMessage}`;
 
     // Check if WhatsApp is installed
-    const canOpenApp = await Linking.canOpenURL(whatsappUrl);
+    const canOpen = await Linking.canOpenURL(whatsappUrl);
     
-    if (canOpenApp) {
-      // Open WhatsApp app with the message
-      await Linking.openURL(whatsappUrl);
-      return true;
-    } else {
-      // Try web version if app is not installed
-      try {
-        await Linking.openURL(webWhatsappUrl);
-        return true;
-      } catch (webError) {
-        console.log('WhatsApp is not accessible via web either:', webError);
-        return false;
-      }
+    if (!canOpen) {
+      console.log('WhatsApp is not installed');
+      return false;
     }
+
+    // Open WhatsApp with the message
+    await Linking.openURL(whatsappUrl);
+    return true;
   } catch (error) {
     console.error('Error sending sales report to WhatsApp:', error);
     return false;

@@ -9,12 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lagotadeoro.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#fdad0e"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.lagotadeoro.app"
     },
@@ -36,7 +40,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#fdad0e"
+          "backgroundColor": "#ffffff"
         }
       ]
     ],
@@ -44,11 +48,13 @@
       "typedRoutes": true
     },
     "extra": {
+      "supabaseUrl": "https://siohapuaipbmjodqxooo.supabase.co",
+      "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpb2hhcHVhaXBibWpvZHF4b29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4Nzc1NDMsImV4cCI6MjA1NzQ1MzU0M30.g6KQdFOWSgXjlO5HpRdcs49eYMo_P-hGAZSMBirmA28",
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "f5c058de-d072-48b3-ab9d-0329e610ad06"
+        "projectId": "a880773d-6e61-4004-9bdf-25d3a8d6d180"
       }
     }
   }

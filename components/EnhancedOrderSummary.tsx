@@ -6,11 +6,16 @@ import {
   Pressable,
   Animated,
   Easing,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { COLORS } from '../src/theme';
+import { COLORS } from '../src/theme'; // Ensure path is correct
+// Removed Animatable import as we are using Animated API here
+
+// Define Dollar Green color (or import from theme)
+const DOLLAR_GREEN = '#2E8B57'; // Example: SeaGreen
 
 interface EnhancedOrderSummaryProps {
   total: number;
@@ -25,66 +30,32 @@ export function EnhancedOrderSummary({
   onCheckout,
   onClearAll
 }: EnhancedOrderSummaryProps) {
+
+  // --- Animated API refs and logic (Keep as is) ---
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(50)).current;
-  const totalTextAnim = useRef(new Animated.Value(1)).current;
+  const totalTextScaleAnim = useRef(new Animated.Value(1)).current;
   const previousTotal = useRef(total);
 
   // Entrance animation
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-        easing: Easing.out(Easing.cubic),
-      }),
-      Animated.timing(translateYAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-        easing: Easing.out(Easing.cubic),
-      }),
+      Animated.timing(opacityAnim, { toValue: 1, duration: 400, useNativeDriver: true, easing: Easing.out(Easing.cubic) }),
+      Animated.timing(translateYAnim, { toValue: 0, duration: 400, useNativeDriver: true, easing: Easing.out(Easing.cubic) }),
     ]).start();
-  }, []);
+  }, [opacityAnim, translateYAnim]);
 
   // Animation when total changes
   useEffect(() => {
     if (previousTotal.current !== total) {
-      // If the total increases, scale up and down quickly
       Animated.sequence([
-        Animated.timing(scaleAnim, {
-          toValue: 0.1,
-          duration: 150,
-          useNativeDriver: true,
-          easing: Easing.out(Easing.cubic),
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-          easing: Easing.in(Easing.cubic),
-        }),
+        Animated.timing(totalTextScaleAnim, { toValue: 1.15, duration: 150, useNativeDriver: true }),
+        Animated.timing(totalTextScaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
       ]).start();
-
-      // Pulse animation for the total text
-      Animated.sequence([
-        Animated.timing(totalTextAnim, {
-          toValue: 1.2,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(totalTextAnim, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
-
       previousTotal.current = total;
     }
-  }, [total]);
+  }, [total, totalTextScaleAnim]);
 
   const handleCheckout = () => {
     if (itemCount > 0) {
@@ -95,7 +66,7 @@ export function EnhancedOrderSummary({
 
   const handleClearAll = () => {
     if (itemCount > 0) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       onClearAll();
     }
   };
@@ -111,59 +82,61 @@ export function EnhancedOrderSummary({
       ]}
     >
       <View style={styles.content}>
-        <View style={styles.topRow}>
-          <View style={styles.itemCountWrapper}>
-            <Ionicons name="cart-outline" size={16} color={COLORS.textLight} style={styles.itemCountIcon} />
-            <Text style={styles.itemCount}>{itemCount} artículos</Text>
-          </View>
-          
-          {itemCount > 0 && (
-            <TouchableOpacity
-              style={styles.clearButton}
-              onPress={handleClearAll}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="trash-outline" size={18} color={COLORS.error} />
-              <Text style={styles.clearText}>Limpiar Todo</Text>
-            </TouchableOpacity>
-          )}
-        </View>
 
-        <View style={styles.divider} />
-
-        <View style={styles.info}>
+        {/* --- TOP SECTION: Total and Clear Button --- */}
+        <View style={styles.topSection}>
+          {/* Total Amount */}
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>Total</Text>
             <Animated.Text
               style={[
-                styles.total,
-                {
-                  transform: [
-                    { scale: totalTextAnim },
-                    {
-                      scale: scaleAnim.interpolate({
-                        inputRange: [0, 0.1],
-                        outputRange: [1, 1.2]
-                      })
-                    }
-                  ]
-                }
+                styles.totalAmountText,
+                { transform: [{ scale: totalTextScaleAnim }] }
               ]}
             >
               ${total.toFixed(2)}
             </Animated.Text>
           </View>
-          
+
+          {/* Clear Button (Moved Up, with text) */}
+          {itemCount > 0 && (
+            <TouchableOpacity
+              style={styles.clearButton} // Keep style with background/padding
+              onPress={handleClearAll}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="trash-outline" size={18} color={COLORS.error} />
+              {/* Keep the Text component */}
+              <Text style={styles.clearText}>Limpiar Articulos</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Divider */}
+        {itemCount > 0 && <View style={styles.divider} />}
+
+        {/* --- BOTTOM SECTION: Item Count and Checkout Button --- */}
+        <View style={styles.bottomSection}>
+           {/* Item Count (Aligned Left, text bigger) */}
+          <View style={styles.itemCountWrapper}>
+            <Ionicons name="cart-outline" size={18} color={COLORS.textSubtle} style={styles.itemCountIcon} />
+            <Text style={styles.itemCountText}> {/* Increased font size */}
+                {itemCount} {itemCount === 1 ? 'artículo' : 'artículos'}
+            </Text>
+          </View>
+
+          {/* Checkout Button */}
           <Pressable
-            style={[
-              styles.checkoutButton,
-              itemCount === 0 && styles.checkoutButtonDisabled
-            ]}
+             style={({pressed}) => [
+                styles.checkoutButton,
+                itemCount === 0 && styles.checkoutButtonDisabled,
+                pressed && styles.checkoutButtonPressed,
+             ]}
             onPress={handleCheckout}
             disabled={itemCount === 0}
           >
             <Text style={styles.checkoutText}>Ver Cuenta</Text>
-            <Ionicons name="receipt-outline" size={18} color="white" style={styles.checkoutIcon} />
+            <Ionicons name="receipt-outline" size={20} color="white" style={styles.checkoutIcon} />
           </Pressable>
         </View>
       </View>
@@ -171,97 +144,110 @@ export function EnhancedOrderSummary({
   );
 }
 
+// --- Styles ---
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
+    left: 12,
+    right: 12,
     backgroundColor: COLORS.card,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 42,
+    borderTopRightRadius: 42,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: COLORS.border,
-    paddingBottom: 34,
+    borderColor: COLORS.borderLight,
+    paddingBottom: Platform.OS === 'ios' ? 30 : 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -6 },
+    shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
+    shadowRadius: 6,
+    elevation: 8,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
-  topRow: {
+  topSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start', // Align to top
+    marginBottom: 12,
+  },
+  totalContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    flex: 1, // Let total take available space
+    marginRight: 10,
+  },
+  totalLabel: {
+    fontSize: 19,
+    color: COLORS.textSubtle,
+    marginBottom: 2,
+    fontWeight: '700',
+  },
+  totalAmountText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: DOLLAR_GREEN, // Keep green color
+    lineHeight: 34,
+  },
+  clearButton: { // Style for clear button WITH text
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    paddingVertical: 8, // Adjust padding
+    paddingHorizontal: 12, // Adjust padding
+    backgroundColor: COLORS.errorLight, // Restore light error background
+    borderRadius: 8,
+    marginTop: 15, // Align with Total label
+  },
+  clearText: { // Style for the text inside clear button
+    color: COLORS.error,
+    fontSize: 18, // Keep size or adjust
+    fontWeight: '500',
+    marginLeft: 5, // Space from icon
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.borderLight,
+    marginVertical: 8,
+  },
+  bottomSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Center items vertically
+    marginTop: 8,
   },
   itemCountWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   itemCountIcon: {
-    marginRight: 6,
+    marginRight: 5, // Adjust space
   },
-  clearButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 8,
-    backgroundColor: COLORS.primaryLight,
-    borderRadius: 8,
-  },
-  clearText: {
-    color: COLORS.error,
-    fontSize: 14,
+  itemCountText: {
+    fontSize: 16, // << Increased font size
+    color: COLORS.textSubtle,
     fontWeight: '500',
-    marginLeft: 6,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: COLORS.border,
-    marginVertical: 10,
-  },
-  info: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 6,
-  },
-  totalContainer: {
-    flexDirection: 'column',
-  },
-  totalLabel: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    marginBottom: 2,
-  },
-  itemCount: {
-    fontSize: 15,
-    color: COLORS.textLight,
-    fontWeight: '500',
-  },
-  total: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
   },
   checkoutButton: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 12,
+    borderRadius: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: COLORS.primaryDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowOffset: { width: 10, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+    marginLeft: 10,
+  },
+  checkoutButtonPressed: {
+     backgroundColor: COLORS.primaryDark,
   },
   checkoutButtonDisabled: {
     backgroundColor: COLORS.subtle,
@@ -270,8 +256,8 @@ const styles = StyleSheet.create({
   },
   checkoutText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 21,
+    fontWeight: '800',
   },
   checkoutIcon: {
     marginLeft: 8,

@@ -1,24 +1,31 @@
 {
   "cli": {
-    "version": ">= 5.9.1",
     "appVersionSource": "remote"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
     "preview": {
-      "distribution": "internal",
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleDebug",
+        "env": {
+          "ANDROID_NDK_VERSION": "25.1.8937393",
+          "ANDROID_SDK_VERSION": "34"
+        }
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "production": {
-      "autoIncrement": true
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease",
+        "env": {
+          "ANDROID_NDK_VERSION": "25.1.8937393",
+          "ANDROID_SDK_VERSION": "34"
+        }
+      },
+      "ios": {}
     }
-  },
-  "submit": {
-    "production": {}
   }
 }

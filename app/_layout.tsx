@@ -1,9 +1,14 @@
 import { Stack } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { COLORS } from '../src/theme';
 import { ThemeProvider } from '../components/ThemeProvider';
+// Import NetInfo
+import NetInfo from '@react-native-community/netinfo';
+// Import supabase
+import { supabase } from '../services/supabase';
+// backgroundSync module has been removed
 
 SplashScreen.preventAutoHideAsync();
 
@@ -12,6 +17,35 @@ export default function RootLayout() {
     // Add any custom fonts here if needed
   });
 
+  // Handle network connectivity
+  useEffect(() => {
+    // Set up network change listener with proper session handling
+    const netInfoUnsubscribe = NetInfo.addEventListener(state => {
+      if (state.isConnected) {
+        console.log('Network connected, verifying session...');
+        
+        // Add a small delay for network stabilization
+        setTimeout(async () => {
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+              console.log('Performing background session refresh...');
+              await supabase.auth.refreshSession();
+            }
+          } catch (error) {
+            console.error('Network reconnect error:', error);
+          }
+        }, 2000);
+      }
+    });
+    
+    // Cleanup on unmount
+    return () => {
+      netInfoUnsubscribe();
+    };
+  }, []);
+
+  // Rest of your component remains the same
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
@@ -59,7 +93,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="sales-history"
           options={{
-            headerTitle: "Historial de Ventas",
+            headerTitle: "",
             headerBackTitle: "Regresar",
           }}
         />
